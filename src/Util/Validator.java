@@ -1,3 +1,5 @@
+package Util;
+
 import Model.Event;
 import Model.Organizer;
 import Model.Venue;

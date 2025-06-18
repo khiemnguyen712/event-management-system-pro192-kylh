@@ -1,4 +1,4 @@
-package App;
+package Service;
 
 import Model.Event;
 

@@ -1,4 +1,4 @@
-package App;
+package Service;
 
 import Model.Event;
 import Model.Organizer;
@@ -6,9 +6,6 @@ import Model.Venue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
