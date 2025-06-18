@@ -34,7 +34,6 @@ public class Validator {
                 System.out.println("❌ Invalid entry. Please enter a valid number.");
             }
         }
-
         return eventId;
     }
 
@@ -45,9 +44,7 @@ public class Validator {
 
     // Number format and instance
     public int inputId(String promptedType, ArrayList<?> promptedList) {
-
         int supposedId;
-
         while (true) {
             System.out.println("Enter the " + promptedType + " ID:");
             listAllId(promptedList);
@@ -62,14 +59,11 @@ public class Validator {
                 System.out.println("❌ Invalid entry. Please enter a valid number");
             }
         }
-
         return supposedId;
     }
 
     public String inputDate(String promptedType) {
-
         String dateString;
-
         while (true) {
             System.out.println("Enter the " + promptedType + " date:");
             dateString = scanner.nextLine();
@@ -79,14 +73,11 @@ public class Validator {
                 break;
             }
         }
-
         return dateString;
     }
 
     public int inputExpectedAttendees() {
-
         int expectedAttendees;
-
         while (true) {
             System.out.println("Enter the number of expected attendees:");
             try {
@@ -100,11 +91,10 @@ public class Validator {
                 System.out.println("❌ Invalid entry. Please enter a valid number.");
             }
         }
-
         return expectedAttendees;
     }
 
-    // --------------------------------------No Prompt Helpers--------------------------------------
+    // --------------------------------------No Prompt Helper--------------------------------------
 
     public boolean isInValidOrder(String startDate, String endDate) {
         LocalDate parsedStartDate = LocalDate.parse(startDate);
@@ -115,25 +105,25 @@ public class Validator {
 
     // --------------------------------------Static Helpers--------------------------------------
 
-    private static boolean hasId(int id, ArrayList<?> genericList) {
-        for (Object item : genericList) {
-            if (item instanceof Event && ((Event) item).getEventId() == id) { return false; }
-            else if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) { return false; }
-            else if (item instanceof Venue && ((Venue) item).getVenueId() == id) { return false; }
-        }
-        return true;
-    }
-
     private static void listAllId(ArrayList<?> genericList) {
         for (Object item : genericList) {
             if (item instanceof Event) {
                 System.out.println(((Event) item).getEventId() + " for " + ((Event) item).getEventName());
             } else if (item instanceof Organizer){
-                System.out.println(((Organizer) item).getOrganizerId() + " for " + ((Organizer) item).getOrganizerId());
+                System.out.println(((Organizer) item).getOrganizerId() + " for " + ((Organizer) item).getOrganizerName());
             } else if (item instanceof Venue) {
                 System.out.println(((Venue) item).getVenueId() + " for " + ((Venue) item).getVenueName());
             }
         }
+    }
+
+    private static boolean hasId(int id, ArrayList<?> genericList) {
+        for (Object item : genericList) {
+            if (item instanceof Event && ((Event) item).getEventId() == id) { return true; }
+            else if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) { return true; }
+            else if (item instanceof Venue && ((Venue) item).getVenueId() == id) { return true; }
+        }
+        return false;
     }
 
     private static boolean isValidDateFormat(String dateStr) {
