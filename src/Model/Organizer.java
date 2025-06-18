@@ -1,3 +1,5 @@
+package Model;
+
 public class Organizer {
 
     private int organizerId;
@@ -26,7 +28,7 @@ public class Organizer {
 
     @Override
     public String toString() {
-        return "Organizer{" +
+        return "Model.Organizer{" +
                 "organizerId=" + organizerId +
                 ", organizerName='" + organizerName + '\'' +
                 '}';

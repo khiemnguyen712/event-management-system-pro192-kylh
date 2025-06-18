@@ -1,3 +1,5 @@
+package Model;
+
 public class Venue {
 
     private int venueId;
@@ -26,7 +28,7 @@ public class Venue {
 
     @Override
     public String toString() {
-        return "Venue{" +
+        return "Model.Venue{" +
                 "venueId=" + venueId +
                 ", venueName='" + venueName + '\'' +
                 '}';
