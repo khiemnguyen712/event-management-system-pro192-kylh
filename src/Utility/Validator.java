@@ -1,4 +1,4 @@
-package Util;
+package Utility;
 
 import Model.Event;
 import Model.Organizer;
@@ -14,9 +14,29 @@ public class Validator {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    // Number format, length, duplicate
-    public int inputEventId(ArrayList<Event> events) {
+    public Event inputNewEvent(ArrayList<Event> existingEvents, ArrayList<Organizer> existingOrganizer, ArrayList<Venue> existingVenues) {
+        String eventName = inputEventName();
+        int eventId = inputEventId(existingEvents);
+        int organizerId = inputId("organizer", existingOrganizer);
+        int venueId = inputId("venue", existingVenues);
+        String startDate;
+        String endDate;
+        while (true) {
+            startDate = inputDate("start");
+            endDate = inputDate("end");
+            if (!isInValidOrder(startDate, endDate)) {
+                System.out.println("❌ End date cannot be before start date. Please enter valid dates.");
+                continue;
+            }
+            break;
+        }
+        int expectedAttendees = inputExpectedAttendees();
 
+        return new Event(eventId, eventName, organizerId, venueId, startDate, endDate, expectedAttendees);
+    }
+
+    // Number format, length & duplication
+    public int inputEventId(ArrayList<Event> events) {
         int eventId;
 
         while (true) {
@@ -39,14 +59,16 @@ public class Validator {
         return eventId;
     }
 
-    // No need for validation
+    // Noo000
     public String inputEventName() {
+        System.out.println("Enter the event name:");
         return scanner.nextLine();
     }
 
-    // Number format and instance
+    // Number format & existing instance
     public int inputId(String promptedType, ArrayList<?> promptedList) {
         int supposedId;
+
         while (true) {
             System.out.println("Enter the " + promptedType + " ID:");
             listAllId(promptedList);
@@ -61,11 +83,14 @@ public class Validator {
                 System.out.println("❌ Invalid entry. Please enter a valid number");
             }
         }
+
         return supposedId;
     }
 
+    // Date format. Not date order
     public String inputDate(String promptedType) {
         String dateString;
+
         while (true) {
             System.out.println("Enter the " + promptedType + " date:");
             dateString = scanner.nextLine();
@@ -75,11 +100,14 @@ public class Validator {
                 break;
             }
         }
+
         return dateString;
     }
 
+    // Number format, negative value
     public int inputExpectedAttendees() {
         int expectedAttendees;
+
         while (true) {
             System.out.println("Enter the number of expected attendees:");
             try {
@@ -93,6 +121,7 @@ public class Validator {
                 System.out.println("❌ Invalid entry. Please enter a valid number.");
             }
         }
+
         return expectedAttendees;
     }
 
@@ -107,8 +136,8 @@ public class Validator {
 
     // --------------------------------------Static Helpers--------------------------------------
 
-    private static void listAllId(ArrayList<?> genericList) {
-        for (Object item : genericList) {
+    private static void listAllId(ArrayList<?> typedList) {
+        for (Object item : typedList) {
             if (item instanceof Event) {
                 System.out.println(((Event) item).getEventId() + " for " + ((Event) item).getEventName());
             } else if (item instanceof Organizer){
@@ -119,8 +148,8 @@ public class Validator {
         }
     }
 
-    private static boolean hasId(int id, ArrayList<?> genericList) {
-        for (Object item : genericList) {
+    private static boolean hasId(int id, ArrayList<?> typedList) {
+        for (Object item : typedList) {
             if (item instanceof Event && ((Event) item).getEventId() == id) { return true; }
             else if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) { return true; }
             else if (item instanceof Venue && ((Venue) item).getVenueId() == id) { return true; }
