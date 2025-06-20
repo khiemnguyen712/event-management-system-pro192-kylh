@@ -11,167 +11,163 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Validator {
-
     private final Scanner scanner = new Scanner(System.in);
 
-    public Event inputNewEvent(ArrayList<Event> existingEvents, ArrayList<Organizer> existingOrganizer, ArrayList<Venue> existingVenues) {
-        String eventName = inputEventName();
-        int eventId = inputEventId(existingEvents);
-        int organizerId = inputId("organizer", existingOrganizer);
-        int venueId = inputId("venue", existingVenues);
-        String startDate;
-        String endDate;
-        while (true) {
-            startDate = inputDate("start");
-            endDate = inputDate("end");
-            if (!isInValidOrder(startDate, endDate)) {
-                System.out.println("❌ End date cannot be before start date. Please enter valid dates.");
-                continue;
-            }
-            break;
-        }
-        int expectedAttendees = inputExpectedAttendees();
+    // TODO--------------------------------------Input Modules--------------------------------------
 
-        return new Event(eventId, eventName, organizerId, venueId, startDate, endDate, expectedAttendees);
-    }
-
-    // --------------------------------------Update modules--------------------------------------
-
-    public String inputUpdatedEventName(String currentName) {
-        System.out.println("Enter new event name (leave blank to keep):");
-        String input = scanner.nextLine();
-        return input.isBlank() ? currentName : input;
-    }
-
-    // --------------------------------------Input modules residues--------------------------------------
-
-    public int inputUpdatedExpectedAttendees(int currentAttendees) {
-        System.out.println("Enter new expected attendees (leave blank to keep '" + currentAttendees + "'):");
-        String input = scanner.nextLine();
-        if (input.isBlank()) return currentAttendees;
-        try {
-            int value = Integer.parseInt(input);
-            if (value < 0) {
-                System.out.println("❌ Must be positive. Keeping original.");
-                return currentAttendees;
-            }
-            return value;
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid number. Keeping original.");
-            return currentAttendees;
-        }
-    }
-
-    public String inputUpdatedDate(String prompt, String currentDate) {
-        System.out.println("Enter new " + prompt + " date (YYYY-MM-DD) (leave blank to keep '" + currentDate + "'):");
-        String input = scanner.nextLine();
-        if (input.isBlank()) return currentDate;
-        if (isValidDateFormat(input)) return input;
-        System.out.println("❌ Invalid date format. Keeping original.");
-        return currentDate;
-    }
-
-    public int inputEventId(ArrayList<Event> events) {
-        int eventId;
-
-        while (true) {
-            System.out.println("Enter the event ID (3 or more digits):");
-            try {
-                eventId = Integer.parseInt(scanner.nextLine());
-                if (String.valueOf(eventId).length() < 3) {
-                    System.out.println("❌ Event ID length is invalid. Please enter an ID with at least 3 digits");
-                    continue;
-                }
-                if (hasId(eventId, events)) {
-                    System.out.println("❌ Event ID already exist. Please enter a unique ID.");
-                    continue;
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Invalid entry. Please enter a valid number.");
-            }
-        }
-        return eventId;
-    }
-
+    // No need for validation
     public String inputEventName() {
-        System.out.println("Enter the event name:");
+        System.out.println("Enter event name:");
         return scanner.nextLine();
     }
 
-    public int inputId(String promptedType, ArrayList<?> promptedList) {
-        int supposedId;
-
+    // Wonky
+    public int inputEventId(ArrayList<Event> events) {
         while (true) {
-            System.out.println("Enter the " + promptedType + " ID:");
-            listAllId(promptedList);
+            System.out.println("Enter event ID (3 digits minimum):");
+            String input = scanner.nextLine();
             try {
-                supposedId = Integer.parseInt(scanner.nextLine()); // throws exception
-                if (!hasId(supposedId, promptedList)) {
-                    System.out.println("❌ " + promptedType + " ID does not exist. Please select a valid ID.");
-                } else {
-                    break;
+                int id = Integer.parseInt(input);
+                if (!isValidNewEventId(id, events)) {
+                    System.out.println("❌ Invalid or duplicate Event ID.");
+                    continue;
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Invalid entry. Please enter a valid number");
+                return id;
+            } catch (NumberFormatException _) {
+                System.out.println("❌ Not a valid number.");
             }
         }
-
-        return supposedId;
     }
 
-    public String inputDate(String promptedType) {
-        String dateString;
-
+    public int inputId(String type, ArrayList<?> list) {
         while (true) {
-            System.out.println("Enter the " + promptedType + " date:");
-            dateString = scanner.nextLine();
-            if (!isValidDateFormat(dateString)) {
-                System.out.println("❌ Invalid date format. Please enter a valid date (YYYY-MM-DD)");
-            } else {
-                break;
+            System.out.println("Enter " + type + " ID:");
+            listAllId(list);
+            String input = scanner.nextLine();
+            try {
+                int id = Integer.parseInt(input);
+                if (!isExistingId(id, list)) {
+                    System.out.println("❌ ID not found.");
+                    continue;
+                }
+                return id;
+            } catch (NumberFormatException _) {
+                System.out.println("❌ Not a valid number.");
             }
         }
+    }
 
-        return dateString;
+    public String inputDate(String prompt) {
+        while (true) {
+            System.out.println("Enter " + prompt + " date (YYYY-MM-DD):");
+            String input = scanner.nextLine();
+            if (isValidDateFormat(input)) return input;
+            System.out.println("❌ Invalid date format.");
+        }
     }
 
     public int inputExpectedAttendees() {
-        int expectedAttendees;
-
         while (true) {
-            System.out.println("Enter the number of expected attendees:");
+            System.out.println("Enter expected attendees:");
+            String input = scanner.nextLine();
             try {
-                expectedAttendees = Integer.parseInt(scanner.nextLine());
-                if (expectedAttendees < 0) {
-                    System.out.println("❌ Attendee count cannot be negative. Please enter a valid count.");
-                } else {
-                    break;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Invalid entry. Please enter a valid number.");
+                int num = Integer.parseInt(input);
+                if (num >= 0) return num;
+                System.out.println("❌ Must be zero or positive.");
+            } catch (NumberFormatException _) {
+                System.out.println("❌ Not a valid number.");
             }
         }
-
-        return expectedAttendees;
     }
 
-    // --------------------------------------No Prompt Helper--------------------------------------
+    // TODO--------------------------------------Update Modules--------------------------------------
 
-    public boolean isInValidOrder(String startDate, String endDate) {
-        LocalDate parsedStartDate = LocalDate.parse(startDate);
-        LocalDate parsedEndDate = LocalDate.parse(endDate);
-
-        return parsedStartDate.isBefore(parsedEndDate) || parsedStartDate.isEqual(parsedEndDate);
+    public String inputUpdatedEventName(String current) {
+        System.out.println("Enter new event name (leave blank to keep '" + current + "'):");
+        String input = scanner.nextLine();
+        return input.isBlank() ? current : input;
     }
 
-    // --------------------------------------Static Helpers--------------------------------------
+    public int inputUpdatedEventId(int currentId, ArrayList<Event> events) {
+        System.out.println("Enter new event ID (leave blank to keep '" + currentId + "'):");
+        String input = scanner.nextLine();
+        if (input.isBlank()) return currentId;
+        try {
+            int id = Integer.parseInt(input);
+            if (isValidNewEventId(id, events)) return id;
+            System.out.println("❌ Invalid or duplicate ID. Keeping original.");
+        } catch (NumberFormatException _) {
+            System.out.println("❌ Not a valid number. Keeping original.");
+        }
+        return currentId;
+    }
 
-    private static void listAllId(ArrayList<?> typedList) {
-        for (Object item : typedList) {
+    public int inputUpdatedId(String type, int currentId, ArrayList<?> list) {
+        System.out.println("Enter new " + type + " ID (leave blank to keep '" + currentId + "'):");
+        listAllId(list);
+        String input = scanner.nextLine();
+        if (input.isBlank()) return currentId;
+        try {
+            int id = Integer.parseInt(input);
+            if (isExistingId(id, list)) return id;
+            System.out.println("❌ ID not found. Keeping original.");
+        } catch (NumberFormatException _) {
+            System.out.println("❌ Not a valid number. Keeping original.");
+        }
+        return currentId;
+    }
+
+    public String inputUpdatedDate(String prompt, String current) {
+        System.out.println("Enter new " + prompt + " date (leave blank to keep '" + current + "'):");
+        String input = scanner.nextLine();
+        if (input.isBlank()) return current;
+        if (isValidDateFormat(input)) return input;
+        System.out.println("❌ Invalid date format. Keeping original.");
+        return current;
+    }
+
+    public int inputUpdatedExpectedAttendees(int current) {
+        System.out.println("Enter new expected attendees (leave blank to keep '" + current + "'):");
+        String input = scanner.nextLine();
+        if (input.isBlank()) return current;
+        try {
+            int num = Integer.parseInt(input);
+            if (num >= 0) return num;
+            System.out.println("❌ Must be zero or positive. Keeping original.");
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Not a valid number. Keeping original.");
+        }
+        return current;
+    }
+
+    // TODO--------------------------------------Validators--------------------------------------
+
+    private boolean isValidNewEventId(int id, ArrayList<Event> events) {
+        return String.valueOf(id).length() >= 3 && !isExistingId(id, events);
+    }
+
+    private boolean isValidDateFormat(String dateStr) {
+        try {
+            LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public boolean isInValidOrder(String start, String end) {
+        LocalDate s = LocalDate.parse(start);
+        LocalDate e = LocalDate.parse(end);
+        return !e.isBefore(s);
+    }
+
+    // TODO--------------------------------------Static helpers--------------------------------------
+
+    private void listAllId(ArrayList<?> list) {
+        for (Object item : list) {
             if (item instanceof Event) {
                 System.out.println(((Event) item).getEventId() + " for " + ((Event) item).getEventName());
-            } else if (item instanceof Organizer){
+            } else if (item instanceof Organizer) {
                 System.out.println(((Organizer) item).getOrganizerId() + " for " + ((Organizer) item).getOrganizerName());
             } else if (item instanceof Venue) {
                 System.out.println(((Venue) item).getVenueId() + " for " + ((Venue) item).getVenueName());
@@ -179,22 +175,12 @@ public class Validator {
         }
     }
 
-    private static boolean hasId(int id, ArrayList<?> typedList) {
-        for (Object item : typedList) {
-            if (item instanceof Event && ((Event) item).getEventId() == id) { return true; }
-            else if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) { return true; }
-            else if (item instanceof Venue && ((Venue) item).getVenueId() == id) { return true; }
+    private boolean isExistingId(int id, ArrayList<?> list) {
+        for (Object item : list) {
+            if (item instanceof Event&& ((Event) item).getEventId() == id) return true;
+            if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) return true;
+            if (item instanceof Venue && ((Venue) item).getVenueId() == id) return true;
         }
         return false;
-    }
-
-    private static boolean isValidDateFormat(String dateStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            LocalDate.parse(dateStr, formatter);
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-        return true;
     }
 }
