@@ -35,7 +35,42 @@ public class Validator {
         return new Event(eventId, eventName, organizerId, venueId, startDate, endDate, expectedAttendees);
     }
 
-    // Number format, length & duplication
+    // --------------------------------------Update modules--------------------------------------
+
+    public String inputUpdatedEventName(String currentName) {
+        System.out.println("Enter new event name (leave blank to keep):");
+        String input = scanner.nextLine();
+        return input.isBlank() ? currentName : input;
+    }
+
+    // --------------------------------------Input modules residues--------------------------------------
+
+    public int inputUpdatedExpectedAttendees(int currentAttendees) {
+        System.out.println("Enter new expected attendees (leave blank to keep '" + currentAttendees + "'):");
+        String input = scanner.nextLine();
+        if (input.isBlank()) return currentAttendees;
+        try {
+            int value = Integer.parseInt(input);
+            if (value < 0) {
+                System.out.println("❌ Must be positive. Keeping original.");
+                return currentAttendees;
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid number. Keeping original.");
+            return currentAttendees;
+        }
+    }
+
+    public String inputUpdatedDate(String prompt, String currentDate) {
+        System.out.println("Enter new " + prompt + " date (YYYY-MM-DD) (leave blank to keep '" + currentDate + "'):");
+        String input = scanner.nextLine();
+        if (input.isBlank()) return currentDate;
+        if (isValidDateFormat(input)) return input;
+        System.out.println("❌ Invalid date format. Keeping original.");
+        return currentDate;
+    }
+
     public int inputEventId(ArrayList<Event> events) {
         int eventId;
 
@@ -59,13 +94,11 @@ public class Validator {
         return eventId;
     }
 
-    // Noo000
     public String inputEventName() {
         System.out.println("Enter the event name:");
         return scanner.nextLine();
     }
 
-    // Number format & existing instance
     public int inputId(String promptedType, ArrayList<?> promptedList) {
         int supposedId;
 
@@ -87,7 +120,6 @@ public class Validator {
         return supposedId;
     }
 
-    // Date format. Not date order
     public String inputDate(String promptedType) {
         String dateString;
 
@@ -104,7 +136,6 @@ public class Validator {
         return dateString;
     }
 
-    // Number format, negative value
     public int inputExpectedAttendees() {
         int expectedAttendees;
 
