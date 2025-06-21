@@ -5,6 +5,7 @@ import Service.EventManagement;
 import Utility.Validator;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -26,7 +27,7 @@ public class Main {
         organizers.add(new Organizer(4, "Socket Semaphores"));
 
         ArrayList<Event> events = new ArrayList<>();
-        EventManagement eventManagement = new EventManagement(events, organizers, venues);
+        EventManagement eventManagement = new EventManagement(events);
 
         Validator validator = new Validator();
         Scanner scanner = new Scanner(System.in);
@@ -45,28 +46,62 @@ public class Main {
             String choice = scanner.nextLine();
 
             switch (choice) {
-                case "1":
+                case "1" -> {
                     Event newEvent = validator.inputNewEvent(events, organizers, venues);
                     eventManagement.createEvent(newEvent);
-                    break;
-                case "2":
+                    System.out.println("✅ Event created successfully.");
+                }
+                case "2" -> {
                     System.out.println(eventManagement.listAllEvents());
-                    break;
-                case "3":
+                }
+                case "3" -> {
+                    int idToUpdate = validator.inputId("event", events);
+                    Event existingEvent = eventManagement.findEventById(idToUpdate);
 
-                    break;
-                case "4":
-
-                    break;
-                case "5":
-
-                    break;
-                case "6":
-
-                    break;
-                case "7":
+                    if (existingEvent == null) {
+                        System.out.println("❌ Event not found.");
+                    } else {
+                        Event updatedEvent = validator.inputUpdatedEvent(events, organizers, venues, existingEvent);
+                        eventManagement.updateEvent(idToUpdate, updatedEvent);
+                        System.out.println("✅ Event updated successfully.");
+                    }
+                }
+                case "4" -> {
+                    System.out.println("✋ Enter event ID to delete:");
+                    try {
+                        int idToDelete = Integer.parseInt(scanner.nextLine());
+                        Event eventToDelete = eventManagement.findEventById(idToDelete);
+                        if (eventToDelete != null) {
+                            eventManagement.deleteEvent(idToDelete);
+                            System.out.println("✅ Event deleted successfully.");
+                        } else {
+                            System.out.println("❌ Event not found.");
+                        }
+                    } catch (NumberFormatException _) {
+                        System.out.println("❌ Not a valid number.");
+                    }
+                }
+                case "5" -> {
+                    System.out.println("✋ Enter event name to search:");
+                    String nameToFind = scanner.nextLine();
+                    List<Event> foundEvents = eventManagement.findEventsByName(nameToFind);
+                    if (foundEvents != null) {
+                        System.out.println(foundEvents);
+                    } else {
+                        System.out.println("❌ Event not found.");
+                    }
+                }
+                case "6" -> {
+                    System.out.println("✋ Enter the file name to save to.");
+                    String fileName = scanner.nextLine();
+                    eventManagement.saveToFile(fileName);
+                    System.out.println("✅ Events saved to file.");
+                }
+                case "7" -> {
                     System.out.println("Exited!");
                     break program;
+                }
+                default -> System.out.println("❌ Invalid option.");
             }
         }
     }

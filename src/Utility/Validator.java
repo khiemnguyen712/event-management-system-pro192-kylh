@@ -15,7 +15,26 @@ public class Validator {
 
     // TODO--------------------------------------Input Modules--------------------------------------
 
-    // No need for validation
+    public Event inputNewEvent(ArrayList<Event> events, ArrayList<Organizer> organizers, ArrayList<Venue> venues) {
+        int eventId = inputEventId(events);
+        String eventName = inputEventName();
+        int organizerId = inputId("organizer", organizers);
+        int venueId = inputId("venue", venues);
+        String startDate;
+        String endDate;
+        while (true) {
+            startDate = inputDate("start");
+            endDate = inputDate("end");
+            if (!isValidDateOrder(startDate, endDate)) {
+                System.out.println("❌ Invalid date order.");
+            } else {
+                break;
+            }
+        }
+        int expectedAttendees = inputExpectedAttendees();
+        return new Event(eventId, eventName, organizerId, venueId, startDate, endDate, expectedAttendees);
+    }
+
     public String inputEventName() {
         System.out.println("✋ Enter the event name:");
         return scanner.nextLine();
@@ -24,11 +43,11 @@ public class Validator {
     public int inputEventId(ArrayList<Event> events) {
         while (true) {
             System.out.println("✋ Enter the event ID (3 digits minimum):");
-            String input = scanner.nextLine();
             try {
-                int id = Integer.parseInt(input);
+                int id = Integer.parseInt(scanner.nextLine());
                 if (isExistingId(id, events)) {
                     System.out.println("❌ Duplicated event ID.");
+                    continue;
                 }
                 if (String.valueOf(id).length() < 3) {
                     System.out.println("❌ ID must be at least 3 digits.");
@@ -63,7 +82,9 @@ public class Validator {
         while (true) {
             System.out.println("✋ Enter the " + prompt + " date (YYYY-MM-DD):");
             String input = scanner.nextLine();
-            if (isValidDateFormat(input)) return input;
+            if (isValidDateFormat(input)) {
+                return input;
+            }
             System.out.println("❌ Invalid date format.");
         }
     }
@@ -84,8 +105,28 @@ public class Validator {
 
     // TODO--------------------------------------Update Modules--------------------------------------
 
+    public Event inputUpdatedEvent(ArrayList<Event> events, ArrayList<Organizer> organizers, ArrayList<Venue> venues, Event existingEvent) {
+        int updatedId = inputUpdatedEventId(existingEvent.getEventId(), events);
+        String updatedName = inputUpdatedEventName(existingEvent.getEventName());
+        int updatedOrganizerId = inputUpdatedId("organizer", existingEvent.getOrganizerId(), organizers);
+        int updatedVenueId = inputUpdatedId("venue", existingEvent.getVenueId(), venues);
+        String updatedStartDate;
+        String updatedEndDate;
+        while (true) {
+            updatedStartDate = inputUpdatedDate("start", existingEvent.getStartDate());
+            updatedEndDate = inputUpdatedDate("end", existingEvent.getEndDate());
+            if (isValidDateOrder(updatedStartDate, updatedEndDate)) {
+                break;
+            } else {
+                System.out.println("❌ Invalid date order.");
+            }
+        }
+        int updatedExpectedAttendees = inputUpdatedExpectedAttendees(existingEvent.getExpectedAttendees());
+        return new Event(updatedId, updatedName, updatedOrganizerId, updatedVenueId, updatedStartDate, updatedEndDate, updatedExpectedAttendees);
+    }
+
     public String inputUpdatedEventName(String currentName) {
-        System.out.println("✋ Enter new event name (leave blank to keep '" + currentName + "'):");
+        System.out.println("✋ Enter new event name:");
         String input = scanner.nextLine();
         return input.isBlank() ? currentName : input;
     }
@@ -117,7 +158,9 @@ public class Validator {
             System.out.println("✋ Enter new " + type + " ID:");
             listAllId(list);
             String input = scanner.nextLine();
-            if (input.isBlank()) return currentId;
+            if (input.isBlank()) {
+                return currentId;
+            }
             try {
                 int updatedId = Integer.parseInt(input);
                 if (!isExistingId(updatedId, list)) {
@@ -139,23 +182,29 @@ public class Validator {
                 return current;
             }
             if (isValidDateFormat(input)) {
-                System.out.println("❌ Invalid date format");
+                return input;
             }
+            System.out.println("❌ Invalid date format");
         }
     }
 
-    public int inputUpdatedExpectedAttendees(int current) {
-        System.out.println("Enter new expected attendees (leave blank to keep '" + current + "'):");
-        String input = scanner.nextLine();
-        if (input.isBlank()) return current;
-        try {
-            int num = Integer.parseInt(input);
-            if (num >= 0) return num;
-            System.out.println("❌ Must be zero or positive. Keeping original.");
-        } catch (NumberFormatException _) {
-            System.out.println("❌ Not a valid number. Keeping original.");
+    public int inputUpdatedExpectedAttendees(int currentExpectedAttendees) {
+        while (true) {
+            System.out.println("Enter new expected attendees (leave blank to keep '" + currentExpectedAttendees + "'):");
+            String input = scanner.nextLine();
+            if (input.isBlank()) {
+                return currentExpectedAttendees;
+            }
+            try {
+                int newExpectedAttendees = Integer.parseInt(input);
+                if (newExpectedAttendees >= 0) {
+                    return newExpectedAttendees;
+                }
+                System.out.println("❌ Must not be negative.");
+            } catch (NumberFormatException _) {
+                System.out.println("❌ Not a valid number.");
+            }
         }
-        return current;
     }
 
     // TODO--------------------------------------Validators--------------------------------------
@@ -176,7 +225,7 @@ public class Validator {
     public boolean isValidDateOrder(String startDate, String endDate) {
         LocalDate tempStart = LocalDate.parse(startDate);
         LocalDate tempEnd = LocalDate.parse(endDate);
-        return tempStart.isBefore(tempEnd) && tempStart.isEqual(tempEnd);
+        return tempStart.isBefore(tempEnd) || tempStart.isEqual(tempEnd);
     }
 
     // TODO--------------------------------------Static helpers--------------------------------------
