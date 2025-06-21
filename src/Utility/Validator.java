@@ -209,10 +209,6 @@ public class Validator {
 
     // TODO--------------------------------------Validators--------------------------------------
 
-    private boolean isValidNewEventId(int id, ArrayList<Event> events) {
-        return String.valueOf(id).length() >= 3 && !isExistingId(id, events);
-    }
-
     private boolean isValidDateFormat(String dateStr) {
         try {
             LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
