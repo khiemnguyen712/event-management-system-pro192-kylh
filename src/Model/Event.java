@@ -78,14 +78,12 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event {" +
-                " eventId=" + eventId +
-                ", eventName='" + eventName + '\'' +
-                ", organizerId=" + organizerId +
-                ", venueId=" + venueId +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", expectedAttendees=" + expectedAttendees +
-                " }";
+        return "\uD83D\uDC0B  " + eventName +
+                " [ID: " + eventId + "]" +
+                " [Organizer ID: " + organizerId + "]" +
+                " [Venue ID: " + venueId + "]" +
+                " starts on " + startDate + " and" +
+                " ends on " + endDate  +
+                " with " + expectedAttendees + " expected attendees";
     }
 }

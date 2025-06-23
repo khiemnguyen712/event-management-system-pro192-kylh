@@ -18,8 +18,8 @@ public class Validator {
     public Event inputNewEvent(ArrayList<Event> events, ArrayList<Organizer> organizers, ArrayList<Venue> venues) {
         int eventId = inputEventId(events);
         String eventName = inputEventName();
-        int organizerId = inputId("organizer", organizers);
-        int venueId = inputId("venue", venues);
+        int organizerId = inputExistingId("organizer", organizers);
+        int venueId = inputExistingId("venue", venues);
         String startDate;
         String endDate;
         while (true) {
@@ -44,10 +44,6 @@ public class Validator {
                     System.out.println("❌ Duplicated event ID.");
                     continue;
                 }
-                if (String.valueOf(id).length() < 3) {
-                    System.out.println("❌ ID must be at least 3 digits.");
-                    continue;
-                }
                 return id;
             } catch (NumberFormatException _) {
                 System.out.println("❌ Not a valid number.");
@@ -56,11 +52,18 @@ public class Validator {
     }
 
     public String inputEventName() {
-        System.out.println("✋ Enter the event name:");
-        return scanner.nextLine();
+        while (true) {
+            System.out.println("✋ Enter the event name:");
+            String eventName = scanner.nextLine();
+            if (eventName.length() < 3) {
+                System.out.println("❌ Must be at least 3 characters.");
+                continue;
+            }
+            return eventName;
+        }
     }
 
-    public int inputId(String type, ArrayList<?> list) {
+    public int inputExistingId(String type, ArrayList<?> list) {
         while (true) {
             System.out.println("✋ Enter the " + type + " ID:");
             listAllId(list);
