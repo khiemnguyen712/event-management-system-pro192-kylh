@@ -35,11 +35,6 @@ public class Validator {
         return new Event(eventId, eventName, organizerId, venueId, startDate, endDate, expectedAttendees);
     }
 
-    public String inputEventName() {
-        System.out.println("✋ Enter the event name:");
-        return scanner.nextLine();
-    }
-
     public int inputEventId(ArrayList<Event> events) {
         while (true) {
             System.out.println("✋ Enter the event ID (3 digits minimum):");
@@ -58,6 +53,11 @@ public class Validator {
                 System.out.println("❌ Not a valid number.");
             }
         }
+    }
+
+    public String inputEventName() {
+        System.out.println("✋ Enter the event name:");
+        return scanner.nextLine();
     }
 
     public int inputId(String type, ArrayList<?> list) {
@@ -158,9 +158,7 @@ public class Validator {
             System.out.println("✋ Enter new " + type + " ID:");
             listAllId(list);
             String input = scanner.nextLine();
-            if (input.isBlank()) {
-                return currentId;
-            }
+            if (input.isBlank()) { return currentId; }
             try {
                 int updatedId = Integer.parseInt(input);
                 if (!isExistingId(updatedId, list)) {
@@ -168,7 +166,7 @@ public class Validator {
                     continue;
                 }
                 return updatedId;
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number. Keeping original.");
             }
         }
@@ -176,21 +174,17 @@ public class Validator {
 
     public String inputUpdatedDate(String prompt, String current) {
         while (true) {
-            System.out.println("Enter new " + prompt + " date:");
+            System.out.println("✋ Enter new " + prompt + " date:");
             String input = scanner.nextLine();
-            if (input.isBlank()) {
-                return current;
-            }
-            if (isValidDateFormat(input)) {
-                return input;
-            }
+            if (input.isBlank()) { return current; }
+            if (isValidDateFormat(input)) { return input; }
             System.out.println("❌ Invalid date format");
         }
     }
 
     public int inputUpdatedExpectedAttendees(int currentExpectedAttendees) {
         while (true) {
-            System.out.println("Enter new expected attendees (leave blank to keep '" + currentExpectedAttendees + "'):");
+            System.out.println("✋ Enter new expected attendees (leave blank to keep current value):");
             String input = scanner.nextLine();
             if (input.isBlank()) {
                 return currentExpectedAttendees;
@@ -202,6 +196,19 @@ public class Validator {
                 }
                 System.out.println("❌ Must not be negative.");
             } catch (NumberFormatException _) {
+                System.out.println("❌ Not a valid number.");
+            }
+        }
+    }
+
+    // TODO--------------------------------------Loose Input Module--------------------------------------
+
+    public int inputLooseEventId(String purpose) {
+        while (true) {
+            System.out.println("✋ Enter event ID to " + purpose + ":");
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number.");
             }
         }
@@ -224,6 +231,15 @@ public class Validator {
         return tempStart.isBefore(tempEnd) || tempStart.isEqual(tempEnd);
     }
 
+    private boolean isExistingId(int id, ArrayList<?> list) {
+        for (Object item : list) {
+            if (item instanceof Event&& ((Event) item).getEventId() == id) { return true; }
+            if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) { return true; }
+            if (item instanceof Venue && ((Venue) item).getVenueId() == id) { return true; }
+        }
+        return false;
+    }
+
     // TODO--------------------------------------Static helpers--------------------------------------
 
     private void listAllId(ArrayList<?> list) {
@@ -236,14 +252,5 @@ public class Validator {
                 System.out.println(((Venue) item).getVenueId() + " for " + ((Venue) item).getVenueName());
             }
         }
-    }
-
-    private boolean isExistingId(int id, ArrayList<?> list) {
-        for (Object item : list) {
-            if (item instanceof Event&& ((Event) item).getEventId() == id) return true;
-            if (item instanceof Organizer && ((Organizer) item).getOrganizerId() == id) return true;
-            if (item instanceof Venue && ((Venue) item).getVenueId() == id) return true;
-        }
-        return false;
     }
 }

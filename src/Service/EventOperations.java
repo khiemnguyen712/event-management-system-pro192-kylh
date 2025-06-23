@@ -16,5 +16,5 @@ public interface EventOperations {
 
     List<Event> listAllEvents();
 
-    void saveToFile(String fileName);
+    boolean saveToFile(String fileName);
 }
