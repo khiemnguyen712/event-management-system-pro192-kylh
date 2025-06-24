@@ -42,6 +42,7 @@ public class Validator {
                 int id = Integer.parseInt(scanner.nextLine());
                 if (id < 0) {
                     System.out.println("❌ ID must not be negative.");
+                    continue;
                 }
                 if (isExistingId(id, events)) {
                     System.out.println("❌ Duplicated event ID.");
@@ -151,12 +152,16 @@ public class Validator {
             if (input.isBlank()) { return currentId; }
             try {
                 int updatedId = Integer.parseInt(input);
+                if (updatedId < 0) {
+                    System.out.println("❌ ID must not be negative.");
+                    continue;
+                }
                 if (isExistingId(updatedId, events)) {
                     System.out.println("❌ Duplicated event ID");
                     continue;
                 }
                 return updatedId;
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number.");
             }
         }
@@ -209,8 +214,6 @@ public class Validator {
             }
         }
     }
-
-    // TODO--------------------------------------Loose Input Module--------------------------------------
 
     public int inputLooseEventId(String purpose) {
         while (true) {
