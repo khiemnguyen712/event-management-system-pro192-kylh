@@ -228,9 +228,9 @@ public class Validator {
 
     // TODO--------------------------------------Validators--------------------------------------
 
-    private boolean isValidDateFormat(String dateStr) {
+    private boolean isValidDateFormat(String dateString) {
         try {
-            LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             return true;
         } catch (DateTimeParseException _) {
             return false;
