@@ -37,9 +37,12 @@ public class Validator {
 
     public int inputEventId(ArrayList<Event> events) {
         while (true) {
-            System.out.println("✋ Enter the event ID (3 digits minimum):");
+            System.out.println("✋ Enter the event ID:");
             try {
                 int id = Integer.parseInt(scanner.nextLine());
+                if (id < 0) {
+                    System.out.println("❌ ID must not be negative.");
+                }
                 if (isExistingId(id, events)) {
                     System.out.println("❌ Duplicated event ID.");
                     continue;
@@ -129,9 +132,16 @@ public class Validator {
     }
 
     public String inputUpdatedEventName(String currentName) {
-        System.out.println("✋ Enter new event name:");
-        String input = scanner.nextLine();
-        return input.isBlank() ? currentName : input;
+        while (true) {
+            System.out.println("✋ Enter new event name:");
+            String eventName = scanner.nextLine();
+            if (eventName.isBlank()) { return currentName; }
+            if (eventName.length() < 3) {
+                System.out.println("❌ Must be at least 3 characters.");
+                continue;
+            }
+            return eventName;
+        }
     }
 
     public int inputUpdatedEventId(int currentId, ArrayList<Event> events) {
@@ -143,10 +153,6 @@ public class Validator {
                 int updatedId = Integer.parseInt(input);
                 if (isExistingId(updatedId, events)) {
                     System.out.println("❌ Duplicated event ID");
-                    continue;
-                }
-                if (String.valueOf(updatedId).length() < 3) {
-                    System.out.println("❌ ID must be at least 3 digits.");
                     continue;
                 }
                 return updatedId;
@@ -187,7 +193,7 @@ public class Validator {
 
     public int inputUpdatedExpectedAttendees(int currentExpectedAttendees) {
         while (true) {
-            System.out.println("✋ Enter new expected attendees (leave blank to keep current value):");
+            System.out.println("✋ Enter new expected attendees:");
             String input = scanner.nextLine();
             if (input.isBlank()) {
                 return currentExpectedAttendees;
