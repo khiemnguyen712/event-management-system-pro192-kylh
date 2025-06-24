@@ -257,11 +257,11 @@ public class Validator {
     private void listAllId(ArrayList<?> list) {
         for (Object item : list) {
             if (item instanceof Event) {
-                System.out.println("(" + ((Event) item).getEventId() + ") for " + ((Event) item).getEventName());
+                System.out.println(((Event) item).getEventId() + ") for " + ((Event) item).getEventName());
             } else if (item instanceof Organizer) {
-                System.out.println("(" + ((Organizer) item).getOrganizerId() + ") for " + ((Organizer) item).getOrganizerName());
+                System.out.println(((Organizer) item).getOrganizerId() + ") for " + ((Organizer) item).getOrganizerName());
             } else if (item instanceof Venue) {
-                System.out.println("(" + ((Venue) item).getVenueId() + ") for " + ((Venue) item).getVenueName());
+                System.out.println(((Venue) item).getVenueId() + ") for " + ((Venue) item).getVenueName());
             }
         }
     }

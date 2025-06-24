@@ -84,6 +84,6 @@ public class Event {
                 " [Venue ID: " + venueId + "]" +
                 " starts on " + startDate + " and" +
                 " ends on " + endDate  +
-                " with " + expectedAttendees + " expected attendees";
+                " with " + expectedAttendees + " expected attendees.";
     }
 }
