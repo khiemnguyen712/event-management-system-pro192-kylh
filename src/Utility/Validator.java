@@ -49,7 +49,7 @@ public class Validator {
                     continue;
                 }
                 return id;
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number.");
             }
         }
@@ -209,7 +209,7 @@ public class Validator {
                     return newExpectedAttendees;
                 }
                 System.out.println("❌ Must not be negative.");
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number.");
             }
         }
