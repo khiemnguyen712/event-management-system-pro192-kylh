@@ -70,8 +70,8 @@ public class EventManagement implements EventOperations {
                 .toList();
     }
 
-@Override
-public boolean saveToFile(String fileName) {
+    @Override
+    public boolean saveToFile(String fileName) {
     // TODO--------------------------------------Snykai Security Patch/*--------------------------------------
     Path baseDirectory = Paths.get("Data").toAbsolutePath().normalize();
     Path targetPath = baseDirectory.resolve(fileName).normalize();

@@ -102,8 +102,10 @@ public class Validator {
             String input = scanner.nextLine();
             try {
                 int num = Integer.parseInt(input);
-                if (num >= 0) return num;
-                System.out.println("❌ Must be zero or positive.");
+                if (num > 0) {
+                    return num;
+                }
+                System.out.println("❌ Must be positive.");
             } catch (NumberFormatException _) {
                 System.out.println("❌ Not a valid number.");
             }
@@ -181,7 +183,7 @@ public class Validator {
                 }
                 return updatedId;
             } catch (NumberFormatException e) {
-                System.out.println("❌ Not a valid number. Keeping original.");
+                System.out.println("❌ Not a valid number.");
             }
         }
     }
@@ -205,10 +207,10 @@ public class Validator {
             }
             try {
                 int newExpectedAttendees = Integer.parseInt(input);
-                if (newExpectedAttendees >= 0) {
+                if (newExpectedAttendees > 0) {
                     return newExpectedAttendees;
                 }
-                System.out.println("❌ Must not be negative.");
+                System.out.println("❌ Must be positive.");
             } catch (NumberFormatException e) {
                 System.out.println("❌ Not a valid number.");
             }
